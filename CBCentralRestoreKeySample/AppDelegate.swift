@@ -12,35 +12,27 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var centralManager: CentralManager? = nil
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Check if the central manager is available, and initilise the central manager with the restore key.
+        /** The presence of this key indicates that the app previously had one or more CBCentralManager objects and was relaunched by 
+         the Bluetooth system to continue actions associated with those objects. The value of this key is an NSArray object containing
+         one or more NSString objects.
+        Each string in the array represents the restoration identifier for a central manager object. This is the same string you assigned to the
+        CBCentralManagerOptionRestoreIdentifierKey
+        key when you initialized the central manager object previously. The system provides the restoration identifiers only for central managers that had active or pending peripheral connections or were scanning for peripherals.
+        */
+        if let restoreKey = launchOptions?[UIApplicationLaunchOptionsKey.bluetoothCentrals] {
+            print(restoreKey)
+            centralManager = CentralManager.sharedInstance
+            // when initlised here the delegate method centralManager:willRestoreState: delegate method will be called and can be restored there.
+        } else {
+            // If not initilise it when ever required by your application
+            centralManager = CentralManager.sharedInstance
+            centralManager?.scan()
+        }
         return true
     }
-
-    func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
-    }
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    }
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
-    }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    }
-
-    func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-
-
 }
 
